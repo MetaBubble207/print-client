@@ -24,7 +24,7 @@ export default function Main() {
     formData.append("file", selectedFile);
 
     try {
-      const res = await fetch("http://localhost:8080/minio/upload", {
+      const res = await fetch("https://pit.cclucky.top/minio/upload", {
         method: "POST",
         body: formData,
       });
