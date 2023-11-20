@@ -64,13 +64,6 @@ export default function Main() {
       }, 2000);
     }
   }, [message]);
- 
-  // 开启和关闭弹窗
-  useEffect(() => {
-    if (count) {
-      console.log("3021890321908309");
-    }
-  }, [count]);
 
   return (
     <div className="flex justify-center items-center flex-col p-6">
