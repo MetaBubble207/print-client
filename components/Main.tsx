@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Main() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [msg, setMsg] = useState("");
+  const [count, setCount] = useState(0);
   const [message, setMessage] = useState(false);
   const messageToast = useRef(null);
 
@@ -24,20 +26,28 @@ export default function Main() {
     formData.append("file", selectedFile);
 
     try {
-      const res = await fetch("https://pit.cclucky.top/minio/upload", {
+      // "https://pit.cclucky.top/minio/upload"
+      const res = await fetch("http://localhost:13572/minio/upload", {
         method: "POST",
         body: formData,
       });
 
       // 进行消息提示
-      setMessage(true)
+      setMessage(true);
 
       // 处理响应
       if (res.ok) {
-        alert("打印任务进行中");
+        const data = await res.json();
+        setMsg(data.msg);
+        setCount(data.data);
       } else {
-        alert("文件打印失败");
+        console.error("请求失败:", res.status);
       }
+      // if (res.ok) {
+      //   alert("打印任务进行中");
+      // } else {
+      //   alert("文件打印失败");
+      // }
     } catch (error) {
       alert("发生错误: " + error);
     }
@@ -49,11 +59,18 @@ export default function Main() {
       const modal: any = messageToast.current;
       modal.showModal();
       setTimeout(() => {
-        modal.close()
-        setMessage(false)
-      }, 2000)
+        modal.close();
+        setMessage(false);
+      }, 2000);
     }
   }, [message]);
+ 
+  // 开启和关闭弹窗
+  useEffect(() => {
+    if (count) {
+      console.log("3021890321908309");
+    }
+  }, [count]);
 
   return (
     <div className="flex justify-center items-center flex-col p-6">
@@ -68,8 +85,11 @@ export default function Main() {
         </span>
       </div>
       <div className="flex justify-center items-center mt-8">
+        <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg mr-3">
+          前面还有： {count}
+        </button>
         <button
-          className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+          className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg ml-3"
           onClick={handlePrint}
         >
           打印
@@ -79,7 +99,7 @@ export default function Main() {
       <dialog ref={messageToast} className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">打印服务</h3>
-          <p className="py-4">已发送打印任务</p>
+          <p className="py-4">{msg}</p>
         </div>
       </dialog>
     </div>
